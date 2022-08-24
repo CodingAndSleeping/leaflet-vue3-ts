@@ -1,7 +1,7 @@
 import { latlngTrans } from "../latlngTran";
 import "../../../../plugins/leaflet-movingmarker/movingmarker";
 import "leaflet-editable";
-import point from "../../../../assets/point.svg";
+import point from "../../../../assets/image/point.svg";
 import * as L from "leaflet";
 
 /**

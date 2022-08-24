@@ -1,24 +1,19 @@
 <template>
   <div class="order-dialog">
-    <el-dialog
-      v-model="dialogTableVisible"
-      :show-close="false"
-      top="10vh"
-      width="70vw"
-    >
+    <el-dialog v-model="visible" :show-close="false">
       <template #header>
-        <span>电子海图订单</span>
-        <div class="closeBtn">
-          <el-icon><ArrowDown /></el-icon>
-          <el-icon><Close /></el-icon>
-        </div>
+        <DialogHeader
+          title="电子海图订单"
+          :visible="visible"
+          @close="visible = !visible"
+        ></DialogHeader>
       </template>
       <div class="content">
         <!-- 输入表单 -->
         <el-form :inline="true" :model="form" class="demo-form-inline">
           <!-- 导出图标 -->
           <el-form-item class="exportIcon">
-            <el-icon><Upload /></el-icon>
+            <el-icon class="export"><Upload /></el-icon>
           </el-form-item>
           <!-- 查询订单 -->
           <el-form-item size="small" class="paysId">
@@ -75,50 +70,7 @@
         </div>
 
         <!-- table -->
-        <el-table
-          ref="multipleTableRef"
-          :data="gridData"
-          style="width: 100%"
-          stripe
-          header-row-class-name="headerRow"
-          @selection-change="handleSelectionChange"
-        >
-          <el-table-column type="selection" width="33" align="center" />
-          <el-table-column
-            v-for="item in tableColumns"
-            :prop="item.prop"
-            :label="item.label"
-            :width="item.width"
-            align="left"
-            show-overflow-tooltip
-          >
-            <template #default="scpoe">
-              <div v-if="item.soltName">
-                <div v-if="item.soltName == 'operate'">
-                  <el-link class="hoverChange" type="success" :underline="false"
-                    >详细审核</el-link
-                  >
-                  <el-link class="hoverChange" type="success" :underline="false"
-                    >直接通过</el-link
-                  >
-                </div>
-                <div v-if="item.soltName == 'back'">
-                  <el-link type="danger" :underline="false">退回</el-link>
-                </div>
-                <div v-if="item.soltName == 'detail'">
-                  <el-link type="primary" :underline="false">详情</el-link>
-                </div>
-
-                <div v-if="item.soltName == 'detailCode'">
-                  <el-link class="underLine" type="primary" :underline="false"
-                    >XZAD123</el-link
-                  >
-                </div>
-              </div>
-              <div v-else>{{ scpoe.row[item.prop] }}</div>
-            </template>
-          </el-table-column>
-        </el-table>
+        <Table :loading="true" :info-list="infoList"></Table>
 
         <!-- 分页器 -->
         <div class="pagination">
@@ -130,6 +82,8 @@
             :background="true"
             layout="total, sizes, prev, pager, next, jumper"
             :total="total"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
           />
           <el-button>确定</el-button>
         </div>
@@ -139,11 +93,23 @@
 </template>
 <script setup lang="ts">
 import { reactive, ref } from "vue";
-import { tableColumns } from "./utils/orderTableColumns";
-const dialogTableVisible = ref<boolean>(true);
+// table组件
+import Table from "./Table.vue";
+// header组件
+import DialogHeader from "./DialogHeader.vue";
 
-// 表单数据
-const form = reactive({
+//  table数据字段接口
+import { ListInfo } from "./types/tableListInfo";
+
+const visible = ref<boolean>(true);
+
+// 输入表单内容
+const form = reactive<{
+  paysId: string;
+  shipName: string;
+  supplier: string;
+  createTime: string;
+}>({
   paysId: "",
   shipName: "",
   supplier: "",
@@ -151,7 +117,7 @@ const form = reactive({
 });
 
 // 模拟数据
-const gridData = [
+const infoList = reactive<ListInfo[]>([
   {
     index: 1,
     code: "hsahajhajajhjajhhah120255888755",
@@ -161,7 +127,7 @@ const gridData = [
     lineName: "TAIWAN STRAIT SOUTH OF WUQIU @",
     state: "待下单",
     currency: "美元",
-    price: "563.3",
+    price: 563.3,
     supplierName: "UKHO",
     detailCode: "XZAD123",
   },
@@ -174,48 +140,48 @@ const gridData = [
     lineName: "TAIWAN STRAIT SOUTH OF WUQIU @",
     state: "待下单",
     currency: "美元",
-    price: "563.3",
+    price: 563.3,
     supplierName: "UKHO",
-    operate: "详细审核直接通过",
-    back: "退回",
-    detail: "详情",
-    detailCode: "XZAD123",
-  },
-  {
-    index: 1,
-    code: "hsahajhajajhjajhhah120255888755",
-    shipName: "南沙荣光",
-    submitName: "芮君",
-    submitDate: "2016-05-02",
-    lineName: "TAIWAN STRAIT SOUTH OF WUQIU @",
-    state: "待下单",
-    currency: "美元",
-    price: "563.3",
-    supplierName: "UKHO",
-    operate: "详细审核直接通过",
-    back: "退回",
-    detail: "详情",
-    detailCode: "XZAD123",
-  },
-];
 
-const multipleSelection = ref([]);
-function handleSelectionChange(val) {
-  multipleSelection.value = val;
-}
+    detailCode: "XZAD123",
+  },
+  {
+    index: 1,
+    code: "hsahajhajajhjajhhah120255888755",
+    shipName: "南沙荣光",
+    submitName: "芮君",
+    submitDate: "2016-05-02",
+    lineName: "TAIWAN STRAIT SOUTH OF WUQIU @",
+    state: "待下单",
+    currency: "美元",
+    price: 563.3,
+    supplierName: "UKHO",
+    detailCode: "XZAD123",
+  },
+]);
 
+// 分页
 const currentPage = ref<number>(1);
-const pageSize = ref<number>(14);
-const total = ref<number>(100);
+const pageSize = ref<number>(10);
+const total = ref<number>(110);
+function handleSizeChange(val: number) {
+  console.log(val);
+}
+function handleCurrentChange(val: number) {
+  console.log(val);
+}
 </script>
 
 <style lang="scss" scoped>
 .order-dialog {
+  // dialog样式
   :deep(.el-dialog) {
+    margin-top: 139px !important;
     padding: 0;
     background-color: #eff2f5;
     width: 1360px;
     height: 468px;
+    // dialog里面header样式
     .el-dialog__header {
       margin: 0;
       padding: 0;
@@ -228,30 +194,19 @@ const total = ref<number>(100);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      span {
-        margin-left: 17px;
-      }
-      .closeBtn {
-        display: flex;
-        align-items: center;
-        margin-right: 16px;
-        .el-icon {
-          margin: 0 0 0 0.3vw;
-          cursor: pointer;
-        }
-      }
     }
+    // dialog里面body样式
     .el-dialog__body {
       padding: 0;
-
       .content {
         margin: 6px 8px;
         background-color: #ffffff;
         padding: 10px 10px;
-        height: 400px;
-        background: #ffffff;
+        width: 1324px;
+        height: 399px;
         border-radius: 2px;
 
+        // 表单行
         .demo-form-inline {
           .el-form-item {
             margin-right: 20px;
@@ -260,12 +215,18 @@ const total = ref<number>(100);
           .exportIcon {
             width: 26px;
             height: 24px;
-            background: #ffffff;
-            border: 1px solid #bfc3cf;
+            background-color: #ffffff;
+            border: 1px solid #bfc3cf; // 给导出图标加外边框
             border-radius: 2px;
-            .el-icon {
+            .export {
               margin: 4px 5px;
             }
+          }
+          .exportIcon:hover {
+            //导出图标鼠标移入样式
+            cursor: pointer;
+            color: #ffffff;
+            background-color: #3d7eff;
           }
           .el-input {
             width: 160px;
@@ -275,8 +236,6 @@ const total = ref<number>(100);
           label {
             height: 24px;
             font-size: 12px;
-            font-family: Source Han Sans CN;
-            font-weight: 400;
             color: #333333;
             line-height: 24px;
           }
@@ -292,8 +251,12 @@ const total = ref<number>(100);
             background: #3d7eff;
             border-radius: 2px;
           }
+          .el-button:hover {
+            opacity: 50%;
+          }
         }
 
+        // 切换标签按钮
         .stateBtn {
           margin-top: 10px;
           .el-button {
@@ -303,81 +266,68 @@ const total = ref<number>(100);
             border-radius: 0px 2px 2px 0px;
           }
         }
-
-        .el-table {
-          margin-top: 1px;
-          font-size: 12px;
-        }
-
-        .headerRow {
-          .el-table__cell {
-            font-size: 12px !important;
-            width: 1323px !important;
-            height: 18px !important;
-            background: #3d7eff !important;
-            padding: 2px 0;
-            color: #ffffff;
-            .cell {
-              line-height: 14px;
-              height: 14px;
-              padding: 0;
-              .el-checkbox__inner {
-                background-color: #3d7eff;
-                border: 1px solid #ffffff;
-              }
-            }
-          }
-        }
-        .el-table__row {
-          // height: 20px;
-          padding: 0;
-          .el-table__cell {
-            padding: 3px 0;
-            .cell {
-              line-height: 14px;
-              height: 14px;
-            }
-          }
-          .el-link {
-            font-size: 12px;
-          }
-          .el-link.hoverChange:hover {
-            color: #ffffff;
-            background-color: #01cba5;
-          }
-          .el-link.underLine {
-            text-decoration: underline;
-          }
-          .cell {
-            padding: 0;
-          }
-        }
-
+        // 分页器
         .pagination {
           display: flex;
           align-items: center;
+
           position: absolute;
           right: 19px;
           bottom: 17px;
+          .el-input {
+            width: 94px;
+            height: 20px;
+            background: #ffffff;
+            border: 1px solid #f1f4f5;
+            border-radius: 2px;
+          }
+          .btn-prev,
+          .btn-next {
+            width: 31px;
+            height: 20px;
+            background: #ffffff;
+            border: 1px solid #f1f4f5;
+            border-radius: 2px;
+          }
+
+          .number,
+          .more {
+            width: 31px;
+            height: 20px;
+            background-color: #ffffff;
+            border: 1px solid #f1f4f5;
+            border-radius: 2px;
+          }
+
+          .number.is-active {
+            background-color: #3d7eff;
+            color: #ffffff;
+          }
+
           .el-button {
             width: 52px;
             height: 20px;
-            background: #3d7eff;
+            background-color: #3d7eff;
             border-radius: 2px;
             font-size: 12px;
             color: #ffffff;
           }
-          .is-active {
-            background-color: #3d7eff;
+          .el-button:hover {
+            opacity: 50%;
           }
         }
       }
     }
   }
-}
 
-.active {
-  background-color: #3d7eff;
-  color: #ffffff;
+  .active {
+    // 标签按钮选中状态
+    width: 100px;
+    height: 28px;
+    background-color: #3d7eff;
+    border-radius: 2px 0px 0px 2px;
+    font-size: 14px;
+    color: #ffffff;
+  }
 }
 </style>

@@ -5,6 +5,8 @@ import "element-plus/dist/index.css";
 import locale from "element-plus/lib/locale/lang/zh-cn";
 import App from "./App.vue";
 
+// 全局样式
+import "./assets/style/index.scss";
 // 注意!!!这句必须跟在const app= xxxx  之后
 
 const app = createApp(App);

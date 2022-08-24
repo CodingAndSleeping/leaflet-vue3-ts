@@ -14,9 +14,9 @@ const emits = defineEmits<{
   (e: "close"): void;
 }>();
 
-function handleClose() {
+const handleClose = (): void => {
   emits("close");
-}
+};
 </script>
 
 <style lang="scss" scoped>

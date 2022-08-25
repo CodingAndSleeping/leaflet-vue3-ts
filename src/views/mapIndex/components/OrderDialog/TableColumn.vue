@@ -37,6 +37,7 @@
 <script setup lang="ts">
 import { ElTableColumn } from 'element-plus';
 
+// 定义el-table-column上的属性接口
 interface IColumnProps {
   type?: string;
   index?: number | ((i: number) => number);
@@ -66,7 +67,6 @@ interface IColumnProps {
   filterMethod?: () => any;
   filteredValue?: [];
 }
-const t: InstanceType<typeof ElTableColumn> |null = null
 
 
 const props = withDefaults(defineProps<IColumnProps>(), {

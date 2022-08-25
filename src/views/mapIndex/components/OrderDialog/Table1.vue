@@ -1,32 +1,28 @@
 <template>
-  <el-table
-    ref="multipleTableRef"
-    :data="infoList"
-    style="width: 100%"
-    stripe
-    header-row-class-name="header-row"
-    @selection-change="handleSelectionChange"
+  <!-- <el-table
   >
-   
-  </el-table>
+   <template #default="scope">
+      <slot :row="scope.row" :$index="scope.$index" :column="scope.column"></slot>
+    </template>
+  </el-table> -->
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { ListInfo } from "./types/tableListInfo";
 
+// 属性
 interface ItableProps {
   // clearSelection:
 }
 
-defineProps<{
-  loading: boolean;
-  infoList: ListInfo[];
-}>();
-const multipleSelection = ref<ListInfo[]>();
-function handleSelectionChange(val: ListInfo[]) {
-  multipleSelection.value = val;
-}
+// 事件
+const emit =  defineEmits<{
+  
+}>()
+
+
+
+
 </script>
 
 <style lang="scss" scoped>

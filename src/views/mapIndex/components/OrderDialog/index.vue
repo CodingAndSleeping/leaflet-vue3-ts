@@ -182,22 +182,22 @@ function handleCurrentChange(val: number) {
     width: 1360px;
     height: 468px;
     // dialog里面header样式
-    .el-dialog__header {
-      margin: 0;
-      padding: 0;
-      height: 36px;
-      width: 1360px;
-      background: #f2f7ff;
-      border-radius: 2px 2px 0px 0px;
-      border-bottom: 1px solid #bfc3cf;
-      color: #999bb2;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+    // .el-dialog__header {
+    //   margin: 0;
+    //   padding: 0;
+    //   height: 36px;
+    //   width: 1360px;
+    //   background: #f2f7ff;
+    //   border-radius: 2px 2px 0px 0px;
+    //   border-bottom: 1px solid #bfc3cf;
+    //   color: #999bb2;
+    //   display: flex;
+    //   justify-content: space-between;
+    //   align-items: center;
+    // }
     // dialog里面body样式
     .el-dialog__body {
-      padding: 0;
+      // padding: 0;
       .content {
         margin: 6px 8px;
         background-color: #ffffff;

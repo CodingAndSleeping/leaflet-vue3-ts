@@ -7,49 +7,18 @@
     header-row-class-name="header-row"
     @selection-change="handleSelectionChange"
   >
-    <TableColumn type="selection" width="33" align="center"> </TableColumn>
-    <TableColumn
-      v-for="(item, index) in tableColumns"
-      :key="index"
-      :prop="item.prop"
-      :label="item.label"
-      :width="item.width"
-      align="left"
-      show-overflow-tooltip
-      #default="scope"
-    >
-      <div v-if="item.soltName">
-        <div v-if="item.soltName == 'operate'">
-          <el-link class="hoverChange" type="success" :underline="false"
-            >详细审核</el-link
-          >&ensp;
-          <el-link class="hoverChange" type="success" :underline="false"
-            >直接通过</el-link
-          >
-        </div>
-        <div v-if="item.soltName == 'back'">
-          <el-link type="danger" :underline="false">退回</el-link>
-        </div>
-        <div v-if="item.soltName == 'detail'">
-          <el-link type="primary" :underline="false">详情</el-link>
-        </div>
-
-        <div v-if="item.soltName == 'detailCode'">
-          <el-link class="underLine" type="primary" :underline="false">{{
-            scope.row.detailCode
-          }}</el-link>
-        </div>
-      </div>
-      <div v-else>{{ scope.row[item.prop] }}</div>
-    </TableColumn>
+   
   </el-table>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
 import { ListInfo } from "./types/tableListInfo";
-import { tableColumns } from "./utils/orderTableColumns";
-import TableColumn from "./TableColumn.vue";
+
+interface ItableProps {
+  // clearSelection:
+}
+
 defineProps<{
   loading: boolean;
   infoList: ListInfo[];

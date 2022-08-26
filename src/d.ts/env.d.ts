@@ -230,6 +230,5 @@ declare namespace L {
   interface TileLayerOptions {
     foo?: string
   }
-
-
+  
 }

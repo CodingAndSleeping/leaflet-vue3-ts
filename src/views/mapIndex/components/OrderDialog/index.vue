@@ -70,8 +70,45 @@
         </div>
 
         <!-- table -->
-        <Table :loading="true" :info-list="infoList"></Table>
+        <!-- <Table :loading="true" :info-list="infoList"></Table> -->
+        <Table :data="infoList" header-color="#3d7eff">
+          <TableColumn type="selection" width="33" align="center">
+          </TableColumn>
+          <TableColumn
+            v-for="(item, index) in tableColumns"
+            :key="index"
+            :prop="item.prop"
+            :label="item.label"
+            :width="item.width"
+            align="left"
+            show-overflow-tooltip
+            #default="scope"
+          >
+            <div v-if="item.soltName">
+              <div v-if="item.soltName == 'operate'">
+                <el-link class="hoverChange" type="success" :underline="false"
+                  >详细审核</el-link
+                >&ensp;
+                <el-link class="hoverChange" type="success" :underline="false"
+                  >直接通过</el-link
+                >
+              </div>
+              <div v-if="item.soltName == 'back'">
+                <el-link type="danger" :underline="false">退回</el-link>
+              </div>
+              <div v-if="item.soltName == 'detail'">
+                <el-link type="primary" :underline="false">详情</el-link>
+              </div>
 
+              <div v-if="item.soltName == 'detailCode'">
+                <el-link class="underLine" type="primary" :underline="false">{{
+                  scope.row.detailCode
+                }}</el-link>
+              </div>
+            </div>
+            <div v-else>{{ scope.row[item.prop] }}</div>
+          </TableColumn>
+        </Table>
         <!-- 分页器 -->
         <div class="pagination">
           <el-pagination
@@ -97,9 +134,10 @@ import { reactive, ref } from "vue";
 import Table from "./Table.vue";
 // header组件
 import DialogHeader from "./DialogHeader.vue";
-
+import { tableColumns } from "./utils/orderTableColumns";
 //  table数据字段接口
 import { ListInfo } from "./types/tableListInfo";
+import TableColumn from "./TableColumn.vue";
 
 const visible = ref<boolean>(true);
 

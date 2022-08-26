@@ -35,7 +35,6 @@
 </template>
 
 <script setup lang="ts">
-import { ElTableColumn } from 'element-plus';
 
 // 定义el-table-column上的属性接口
 interface IColumnProps {

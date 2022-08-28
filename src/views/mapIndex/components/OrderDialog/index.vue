@@ -50,12 +50,12 @@
 
       <div class="stateBtn">
         <el-button-group>
-          <el-button class="active">查看全部</el-button>
-          <el-button>待提交</el-button>
-          <el-button>待审核</el-button>
-          <el-button>待发货</el-button>
-          <el-button>待签收</el-button>
-          <el-button>待结算</el-button>
+          <el-button :class="{active : currentTabName === '查看全部'}" @click="currentTabName = '查看全部'">查看全部</el-button>
+          <el-button :class="{active : currentTabName === '待提交'}" @click="currentTabName = '待提交'">待提交</el-button>
+          <el-button :class="{active : currentTabName === '待审核'}" @click="currentTabName = '待审核'">待审核</el-button>
+          <el-button :class="{active : currentTabName === '待发货'}" @click="currentTabName = '待发货'">待发货</el-button>
+          <el-button :class="{active : currentTabName === '待签收'}" @click="currentTabName = '待签收'">待签收</el-button>
+          <el-button :class="{active : currentTabName === '待结算'}" @click="currentTabName = '待结算'">待结算</el-button>
         </el-button-group>
       </div>
 
@@ -152,6 +152,8 @@ const form = reactive<{
   createTime: "",
 });
 
+const currentTabName = ref<string>("查看全部");
+
 // 模拟数据
 const infoList = reactive<ListInfo[]>([
   {
@@ -208,13 +210,13 @@ function handleCurrentChange(val: number) {
 }
 const tableRef = ref<InstanceType<typeof ElTable>>();
 
-nextTick(() => {
-  console.log(tableRef.value);
-  const fns = tableRef.value;
-  nextTick(() => {
-    console.log(fns?.clearSelection);
-  });
-});
+// nextTick(() => {
+//   console.log(tableRef.value);
+//   const fns = tableRef.value;
+//   nextTick(() => {
+//     console.log(fns?.clearSelection);
+//   });
+// });
 </script>
 
 <style lang="scss" scoped>

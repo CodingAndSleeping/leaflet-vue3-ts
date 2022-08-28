@@ -135,7 +135,8 @@ interface ItableProps {
   tableLayout?: "fixed" | "auto";
   scrollbarAlwaysOn?: boolean;
   flexible?: boolean;
-  headerColor: string;
+  headerBackgroundColor: string;
+  headerFontColor:string;
 }
 
 // 属性添加默认值
@@ -161,9 +162,11 @@ const props = withDefaults(defineProps<ItableProps>(), {
   tableLayout: "fixed",
   scrollbarAlwaysOn: false,
   flexible: false,
-  headerColor: "#ffffff",
-  // #3d7eff
+  headerBackgroundColor:"#ffffff",
+  headerFontColor:"#000000"
 });
+
+
 
 // 事件接口
 interface ItableEmit {
@@ -273,8 +276,9 @@ function handleExpandChange(row: any, expanded: any): void {
   emit("expand-change", row, expanded);
 }
 
-// table上的方法
+// 获取 eltable ref对象
 const elTableRef = ref<InstanceType<typeof ElTable>>();
+
 
 const clearSelection = ref<(() => void) | undefined>();
 const getSelectionRows = ref<(() => any) | undefined>();
@@ -328,35 +332,41 @@ defineExpose({
   setScrollLeft,
 });
 
-// console.log(a)
+
+
+
 </script>
 
 <style lang="scss" scoped>
-$headerColor:v-bind(headerColor);
+$headerBackgroundColor:v-bind(headerBackgroundColor);
+$headerFontColor:v-bind(headerFontColor);
 
-@function set-color($color) {
-  @if (lightness($color) > 40) {
-    @return #000;
-  } @else {
-    @return #fff;
-  }
-}
+
+// @function set-color($color) {
+//   @if (lightness($color) > 50) {
+//     @return #000;
+//   } @else {
+//     @return #fff;
+//   }
+// }
+
 
 :deep(.el-table__header) {
   .el-table__cell {
     font-size: 12px !important;
     width: 1323px !important;
     height: 18px !important;
-    background: $headerColor !important;
+    background: $headerBackgroundColor !important;
     padding: 2px 0;
-    color: #ffffff;
+    color: $headerFontColor;
     .cell {
       line-height: 14px;
       height: 14px;
       padding: 0;
       .el-checkbox__inner {
-        background-color: $headerColor;
-        border: 1px solid #ffffff;
+        background-color: $headerBackgroundColor;
+        border: 1px solid $headerFontColor;
+;
       }
     }
   }

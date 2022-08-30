@@ -1,21 +1,40 @@
 <template>
-  <div class="dialog-header">
+  <div class="dialog-header" :style="style">
     <span class="dialog-title">{{ title }}</span>
     <div class="right-btn">
-      <el-icon @click="handleHidden"><ArrowDown /></el-icon>
+      <el-icon @click="handleHidden" v-if="isShowHiddenBtn"
+        ><ArrowDown
+      /></el-icon>
       <el-icon @click="handleClose"><Close /></el-icon>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { inject, ref } from "vue";
-defineProps<{
-  title: string;
-  showHiddenBtn:boolean,
-  backgroundColor:string,
-  fontColor:string
-}>();
+import { computed, inject, ref } from "vue";
+interface IdialogHeaderProps {
+  title?: string;
+  heigt?:string;
+  showHiddenBtn?:boolean;
+  backgroundColor?:string;
+  fontColor?:string;
+  isShowHiddenBtn:boolean;
+}
+const props = withDefaults(defineProps<IdialogHeaderProps>(), {
+  heigt:"36px",
+  isShowHiddenBtn:true,
+  backgroundColor:"#f2f7ff",
+  fontColor:"#848dae"
+});
+
+const style = computed(()=>{
+  return {
+     "--backgroundColor": props.backgroundColor,
+     "--fontColor": props.fontColor,
+     "--height":props.heigt,
+  }
+})
+
 const emits = defineEmits<{
   (e: "close"): void;
 }>();
@@ -44,20 +63,19 @@ function handleHidden(){
 
 <style lang="scss" scoped>
 .dialog-header {
-  height: 36px;
+  height: var(--height);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #f2f7ff;
+  background-color: var(--backgroundColor);
   border-radius: 2px 2px 0px 0px;
   border-bottom: 1px solid #bfc3cf;
-  color: #999bb2;
   .dialog-title {
     margin-left: 17px;
     font-size: 16px;
     font-family: Source Han Sans CN;
     font-weight: 400;
-    color: #848dae;
+    color: var(--fontColor);
   }
   .right-btn {
     display: flex;

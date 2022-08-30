@@ -1,123 +1,150 @@
 <template>
   <Dialog v-model="visible">
-    <template #header>
+    <template #header="scope">
+      <!-- {{scope}} -->
       <DialogHeader
         title="电子海图订单"
         @close="visible = !visible"
       ></DialogHeader>
     </template>
     <template #default>
-      <el-form :inline="true" :model="form" class="demo-form-inline">
-        <el-form-item class="exportIcon">
-          <el-icon class="export"><Upload /></el-icon>
-        </el-form-item>
-        <el-form-item size="small" class="paysId">
-          <el-input
-            v-model="form.paysId"
-            placeholder="查询订单编号"
-            suffix-icon="Search"
-            size="small"
-          />
-        </el-form-item>
-        <el-form-item size="small" class="shipName">
-          <el-input
-            v-model="form.shipName"
-            placeholder="船舶名称"
-            suffix-icon="Search"
-            size="small"
-          />
-        </el-form-item>
-        <el-form-item label="供应商" size="small" class="supplier">
-          <el-select v-model="form.supplier" placeholder="全部供应商">
-            <el-option label="Zone one" value="shanghai" />
-            <el-option label="Zone two" value="beijing" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="创建时间" size="small">
-          <el-date-picker
-            class="datePicker"
-            v-model="form.createTime"
-            type="daterange"
-            size="small"
-            start-placeholder="开始时间"
-            end-placeholder="结束时间"
-          />
-        </el-form-item>
-        <el-form-item size="small">
-          <el-button type="primary">查询</el-button>
-        </el-form-item>
-      </el-form>
+      <div class="chart-order">
+        <el-form :inline="true" :model="form" class="demo-form-inline">
+          <el-form-item class="exportIcon">
+            <el-icon class="export"><Upload /></el-icon>
+          </el-form-item>
+          <el-form-item size="small" class="paysId">
+            <el-input
+              v-model="form.paysId"
+              placeholder="查询订单编号"
+              suffix-icon="Search"
+              size="small"
+            />
+          </el-form-item>
+          <el-form-item size="small" class="shipName">
+            <el-input
+              v-model="form.shipName"
+              placeholder="船舶名称"
+              suffix-icon="Search"
+              size="small"
+            />
+          </el-form-item>
+          <el-form-item label="供应商" size="small" class="supplier">
+            <el-select v-model="form.supplier" placeholder="全部供应商">
+              <el-option label="Zone one" value="shanghai" />
+              <el-option label="Zone two" value="beijing" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="创建时间" size="small">
+            <el-date-picker
+              class="datePicker"
+              v-model="form.createTime"
+              type="daterange"
+              size="small"
+              start-placeholder="开始时间"
+              end-placeholder="结束时间"
+            />
+          </el-form-item>
+          <el-form-item size="small">
+            <el-button type="primary">查询</el-button>
+          </el-form-item>
+        </el-form>
 
-      <div class="stateBtn">
-        <el-button-group>
-          <el-button :class="{active : currentTabName === '查看全部'}" @click="currentTabName = '查看全部'">查看全部</el-button>
-          <el-button :class="{active : currentTabName === '待提交'}" @click="currentTabName = '待提交'">待提交</el-button>
-          <el-button :class="{active : currentTabName === '待审核'}" @click="currentTabName = '待审核'">待审核</el-button>
-          <el-button :class="{active : currentTabName === '待发货'}" @click="currentTabName = '待发货'">待发货</el-button>
-          <el-button :class="{active : currentTabName === '待签收'}" @click="currentTabName = '待签收'">待签收</el-button>
-          <el-button :class="{active : currentTabName === '待结算'}" @click="currentTabName = '待结算'">待结算</el-button>
-        </el-button-group>
-      </div>
+        <div class="stateBtn">
+          <el-button-group>
+            <el-button
+              :class="{ active: currentTabName === '查看全部' }"
+              @click="currentTabName = '查看全部'"
+              >查看全部</el-button
+            >
+            <el-button
+              :class="{ active: currentTabName === '待提交' }"
+              @click="currentTabName = '待提交'"
+              >待提交</el-button
+            >
+            <el-button
+              :class="{ active: currentTabName === '待审核' }"
+              @click="currentTabName = '待审核'"
+              >待审核</el-button
+            >
+            <el-button
+              :class="{ active: currentTabName === '待发货' }"
+              @click="currentTabName = '待发货'"
+              >待发货</el-button
+            >
+            <el-button
+              :class="{ active: currentTabName === '待签收' }"
+              @click="currentTabName = '待签收'"
+              >待签收</el-button
+            >
+            <el-button
+              :class="{ active: currentTabName === '待结算' }"
+              @click="currentTabName = '待结算'"
+              >待结算</el-button
+            >
+          </el-button-group>
+        </div>
 
-      <Table
-        :data="infoList"
-        header-background-color="#3d7eff"
-        header-font-color="#ffffff"
-        ref="tableRef"
-      >
-        <TableColumn type="selection" width="33" align="center"> </TableColumn>
-        <TableColumn
-          v-for="(item, index) in tableColumns"
-          :key="index"
-          :prop="item.prop"
-          :label="item.label"
-          :width="item.width"
-          align="left"
-          show-overflow-tooltip
+        <Table
+          :data="infoList"
+          header-background-color="#3d7eff"
+          header-font-color="#ffffff"
+          ref="tableRef"
         >
-          <template #default="scope">
-            <div v-if="item.soltName">
-              <div v-if="item.soltName == 'operate'">
-                <el-link class="hoverChange" type="success" :underline="false"
-                  >详细审核</el-link
-                >&ensp;
-                <el-link class="hoverChange" type="success" :underline="false"
-                  >直接通过</el-link
-                >
-              </div>
-              <div v-if="item.soltName == 'back'">
-                <el-link type="danger" :underline="false">退回</el-link>
-              </div>
-              <div v-if="item.soltName == 'detail'">
-                <el-link type="primary" :underline="false">详情</el-link>
-              </div>
+          <TableColumn type="selection" width="33" align="center">
+          </TableColumn>
+          <TableColumn
+            v-for="(item, index) in tableColumns"
+            :key="index"
+            :prop="item.prop"
+            :label="item.label"
+            :width="item.width"
+            align="left"
+            show-overflow-tooltip
+          >
+            <template #default="scope">
+              <div v-if="item.soltName">
+                <div v-if="item.soltName == 'operate'">
+                  <link-text type="success"> 详细审核 </link-text>
+                  &ensp;
+                  <link-text type="success"> 直接通过 </link-text>
+                </div>
+                <div v-if="item.soltName == 'back'">
+                  <el-link type="danger" :underline="false">退回</el-link>
+                </div>
+                <div v-if="item.soltName == 'detail'">
+                  <el-link type="primary" :underline="false">详情</el-link>
+                </div>
 
-              <div v-if="item.soltName == 'detailCode'">
-                <el-link class="underLine" type="primary" :underline="false">{{
-                  scope.row.detailCode
-                }}</el-link>
+                <div v-if="item.soltName == 'detailCode'">
+                  <el-link
+                    class="underLine"
+                    type="primary"
+                    :underline="false"
+                    >{{ scope.row.detailCode }}</el-link
+                  >
+                </div>
               </div>
-            </div>
-            <div v-else>{{ scope.row[item.prop] }}</div>
-          </template>
-        </TableColumn>
-      </Table>
-    </template>
-    <template #footer>
-      <div class="pagination">
-        <el-pagination
-          v-model:currentPage="currentPage"
-          v-model:page-size="pageSize"
-          :page-sizes="[10, 20, 30, 40]"
-          :small="true"
-          :background="true"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="total"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-        />
-        <el-button>确定</el-button>
-      </div>s
+              <div v-else>{{ scope.row[item.prop] }}</div>
+            </template>
+          </TableColumn>
+        </Table>
+
+        <div class="pagination">
+          <el-pagination
+            v-model:currentPage="currentPage"
+            v-model:page-size="pageSize"
+            :page-sizes="[10, 20, 30, 40]"
+            :small="true"
+            :background="true"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+          />
+          <el-button>确定</el-button>
+        </div>
+      </div>
     </template>
   </Dialog>
 </template>
@@ -131,6 +158,8 @@ import TableColumn from "./TableColumn.vue";
 import Dialog from "./Dialog.vue";
 // dialogHeader组件
 import DialogHeader from "./DialogHeader.vue";
+
+import LinkText from "@/components/LinkText";
 
 import { tableColumns } from "./utils/orderTableColumns";
 //  table数据字段接口
@@ -220,6 +249,10 @@ const tableRef = ref<InstanceType<typeof ElTable>>();
 </script>
 
 <style lang="scss" scoped>
+.chart-order {
+  background: #fff;
+  padding: 10px;
+}
 .demo-form-inline {
   .el-form-item {
     margin-right: 20px;
@@ -279,14 +312,19 @@ const tableRef = ref<InstanceType<typeof ElTable>>();
     border-radius: 0px 2px 2px 0px;
   }
 }
+
+:deep(.el-link) {
+  font-size: 12px;
+  padding: 0 !important;
+}
+
 // 分页器
 .pagination {
+  margin-top: 14px;
   display: flex;
   align-items: center;
+  justify-content: flex-end;
 
-  position: absolute;
-  right: 19px;
-  bottom: 17px;
   .el-input {
     width: 94px;
     height: 20px;

@@ -162,8 +162,8 @@ const props = withDefaults(defineProps<ItableProps>(), {
   tableLayout: "fixed",
   scrollbarAlwaysOn: false,
   flexible: false,
-  headerBackgroundColor:"#ffffff",
-  headerFontColor:"#000000"
+  headerBackgroundColor:"#ffffff", // table标题栏背景色
+  headerFontColor:"#000000"  // table标题栏文字颜色
 });
 
 
@@ -195,7 +195,9 @@ interface ItableEmit {
   ): void;
   (e: "expand-change", row: any, expanded: any): void;
 }
+// 接收事件
 const emit = defineEmits<ItableEmit>();
+// 出发事件函数
 function handleSelect(selection: any, row: any): void {
   emit("select", selection, row);
 }
@@ -279,7 +281,7 @@ function handleExpandChange(row: any, expanded: any): void {
 // 获取 eltable ref对象
 const elTableRef = ref<InstanceType<typeof ElTable>>();
 
-
+// 定义eltable上的方法
 const clearSelection = ref<(() => void) | undefined>();
 const getSelectionRows = ref<(() => any) | undefined>();
 const toggleRowSelection = ref<
@@ -300,7 +302,7 @@ const scrollTo = ref<
 >();
 const setScrollTop = ref<(() => void) | undefined>();
 const setScrollLeft = ref<(() => void) | undefined>();
-
+// 给方法赋值
 nextTick(() => {
   clearSelection.value = elTableRef.value?.clearSelection;
   getSelectionRows.value = elTableRef.value?.getSelectionRows;
@@ -316,6 +318,8 @@ nextTick(() => {
   setScrollTop.value = elTableRef.value?.setScrollTop;
   setScrollLeft.value = elTableRef.value?.setScrollLeft;
 });
+
+// 将方法暴露出去
 defineExpose({
   clearSelection,
   getSelectionRows,
@@ -340,15 +344,6 @@ defineExpose({
 <style lang="scss" scoped>
 $headerBackgroundColor:v-bind(headerBackgroundColor);
 $headerFontColor:v-bind(headerFontColor);
-
-
-// @function set-color($color) {
-//   @if (lightness($color) > 50) {
-//     @return #000;
-//   } @else {
-//     @return #fff;
-//   }
-// }
 
 
 :deep(.el-table__header) {
@@ -381,16 +376,7 @@ $headerFontColor:v-bind(headerFontColor);
       height: 14px;
     }
   }
-  .el-link {
-    font-size: 12px;
-  }
-  .el-link.hoverChange:hover {
-    color: #ffffff;
-    background-color: #01cba5;
-  }
-  .el-link.underLine {
-    text-decoration: underline;
-  }
+
   .cell {
     padding: 0;
   }
